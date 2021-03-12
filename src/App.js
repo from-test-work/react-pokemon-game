@@ -8,6 +8,8 @@ function App() {
         <img src={logo} className="App-logo" alt="logo" />
         <p>
           Hello World! React.JS
+            <br/>
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias, cupiditate.
         </p>
       </header>
     </div>
