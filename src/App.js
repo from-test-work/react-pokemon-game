@@ -158,7 +158,13 @@ function App() {
           <p>2.2 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Adipisci, porro.</p>
           <div className="flex">
             {
-              POKEMONS.map((item ) => <PokemonCard key={item.id} {...item} />)
+              POKEMONS.map((item ) => <PokemonCard
+                  key={item.id}
+                  id={item.id}
+                  name={item.name}
+                  img={item.img}
+                  type={item.type}
+                  values={item.values} />)
             }
           </div>
         </LayoutBlock>
