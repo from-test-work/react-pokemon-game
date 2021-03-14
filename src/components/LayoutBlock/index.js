@@ -1,19 +1,19 @@
-import style from './style.module.css';
+import st from './style.module.css';
 
-const LayoutBlock = ({title="layout title", desc="Layout description", urlBg, colorBg}) => {
+const LayoutBlock = ({title="layout title", urlBg, colorBg, children}) => {
+    const style = {};
+    if (urlBg) {style.backgroundImage = `url(${urlBg})`};
+    if (colorBg) {style.backgroundColor = colorBg};
     return (
-        <section className={style.root} style={
-            urlBg ? {backgroundImage: `url(${urlBg})`} : colorBg ? {backgroundColor: colorBg} : {}
-        }>
-            <div className={style.wrapper}>
+        <section className={st.root} style={style}>
+            <div className={st.wrapper}>
                 <article>
-                    <div className={style.title}>
+                    <div className={st.title}>
                         <h3>{title}</h3>
-                        <span className={style.separator}></span>
+                        <span className={st.separator}></span>
                     </div>
-                    {/* eslint-disable-next-line no-sequences */}
-                    <div className={style.desc, style.full}>
-                        <p>{desc}</p>
+                    <div className={`${st.desc} ${st.full}`}>
+                        {children}
                     </div>
                 </article>
             </div>
