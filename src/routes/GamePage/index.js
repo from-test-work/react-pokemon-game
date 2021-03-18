@@ -1,12 +1,6 @@
-import React from "react";
-import MenuHeader from "../../components/MenuHeader";
-import HeaderBlock from "../../components/HeaderBlock";
-import LayoutBlock from "../../components/LayoutBlock";
-import FooterBlock from "../../components/FooterBlock";
+import {useHistory} from 'react-router-dom';
+import {useState} from "react";
 import PokemonCard from "../../components/PokemonCard";
-
-import bg2 from "../../assets/bg2.jpg";
-import bg3 from "../../assets/bg3.jpg";
 
 import '../../index.css';
 import '../../App.css';
@@ -146,45 +140,45 @@ const POKEMONS = [
     }
 ]
 
-function HomePage({onChangePage}) {
-    const handleClickButton = (pageName) => {
-        console.log('####: <HomePage />');
-        onChangePage && onChangePage(pageName);
+const GamePage = () => {
+    const history = useHistory();
+    const handleBackToHomePage = () => history.push('/');
+    const [pokemons, setPokemons] = useState(POKEMONS);
+
+    const handleChangeParentState = (payload) => {
+        const {id, isActive} = payload;
+        const cards = pokemons.map((item) => {
+            if (item.id === id) {
+                item.isActive = !isActive;
+            }
+            return item;
+        });
+
+        setPokemons(cards);
     }
-
     return (
-        <>
-            <MenuHeader />
-            <HeaderBlock onClickButton={handleClickButton} />
+        <div>
+            <h1>
+                This is Game Page!
+            </h1>
+            <button onClick={handleBackToHomePage}>Back to HomePage</button>
 
-            <LayoutBlock urlBg={bg2}>
-                <p>1.1 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Adipisci, porro.</p>
-                <p>1.2 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Adipisci, porro.</p>
-            </LayoutBlock>
-
-            <LayoutBlock colorBg="#e2e2e2">
-                <p>2.1 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Adipisci, porro.</p>
-                <p>2.2 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Adipisci, porro.</p>
-                <div className="flex">
-                    {
-                        POKEMONS.map((item ) => <PokemonCard
-                            key={item.id}
-                            id={item.id}
-                            name={item.name}
-                            img={item.img}
-                            type={item.type}
-                            values={item.values} />)
-                    }
-                </div>
-            </LayoutBlock>
-            <LayoutBlock urlBg={bg3}>
-                <p>3.1 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Adipisci, porro.</p>
-                <p>3.2 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Adipisci, porro.</p>
-            </LayoutBlock>
-
-            <FooterBlock/>
-        </>
+            <div className="flex">
+                {
+                    pokemons.map((item ) => <PokemonCard
+                        key={item.id}
+                        id={item.id}
+                        name={item.name}
+                        img={item.img}
+                        type={item.type}
+                        values={item.values}
+                        isActive={item.isActive}
+                        onChangeParentState={handleChangeParentState}
+                    />)
+                }
+            </div>
+        </div>
     );
-}
+};
 
-export default HomePage;
+export default GamePage;

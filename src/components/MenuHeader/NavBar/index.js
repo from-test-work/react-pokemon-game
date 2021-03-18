@@ -1,24 +1,22 @@
 import cn from 'classnames';
 import style from './style.module.css'
 
-const NavBar = ({navState, onChangeMenuOpen }) => {
-    console.log('navState: ', navState);
+const NavBar = ({isOpen, bgActive = false, onChangeMenuOpen }) => {
 
     return (
-        <nav className={style.root}>
+        <nav className={cn(style.root, {
+            [style.bgActive] : bgActive
+        })}>
             <div className={style.navWrapper}>
                 <p className={style.brand}>LOGO</p>
-                <a href="/#"
-                   className={
-                       cn(
-                           style.menuButton,
-                           {[style[`${navState.className}`]]: navState.status}
-                       )
-                    }
-                    onClick={onChangeMenuOpen}
+                <div
+                   className={cn(style.menuButton, {
+                       [style.active]: isOpen
+                   })}
+                   onClick={onChangeMenuOpen}
                 >
                     <span />
-                </a>
+                </div>
             </div>
         </nav>
     );

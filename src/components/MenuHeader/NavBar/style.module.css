@@ -67,16 +67,16 @@
     background: #f300b4;
 }
 
-.menuButton.isActive > span  {
+.menuButton.active > span  {
     background: transparent;
 }
 
-.menuButton.isActive > span::before  {
+.menuButton.active > span::before  {
     transform: rotate(-225deg);
     top: 0px;
 }
 
-.menuButton.isActive > span::after  {
+.menuButton.active > span::after  {
     transform: rotate(225deg);
     top: 0px;
 }
