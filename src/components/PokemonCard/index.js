@@ -2,9 +2,9 @@ import style from './style.module.css';
 import cardBackSide from '../../assets/card-back-side.jpg'
 import cn from 'classnames';
 
-const PokemonCard = ({id, name, img, type, values, isActive = false, onChangeParentState}) => {
+const PokemonCard = ({keyid, id, name, img, type, values, isActive = false, onChangeParentState}) => {
     const handleClick = () => {
-        onChangeParentState && onChangeParentState({id, isActive});
+        onChangeParentState && onChangeParentState({keyid, isActive});
     }
 
     return (
