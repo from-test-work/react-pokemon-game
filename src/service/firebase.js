@@ -25,24 +25,24 @@ class Firebase {
         })
     }
 
+    offPokemonsSoket = () => {
+        this.database.ref('pokemons').off();
+    }
+
     getPokemonsOnce = async () => {
         return await this.database.ref('pokemons').once('value')
             .then(snapshot => snapshot.val());
     }
 
     postPokemon(keyid, pokemon, cb = null) {
-        this.database.ref(`pokemons/${keyid}`).set(pokemon)
-            .then(() => cb())
-            .catch((error) => {console.error(error.message())});
+        this.database.ref(`pokemons/${keyid}`).set(pokemon);
+            // .then(() => cb())
+            // .catch((error) => {console.error(error.message())});
     }
 
-    addPokenon(data, cb) {
-        const keyid = this.database.ref().child('pokemons').push().key;
-        this.database.ref(`pokemons/${keyid}`).set(data)
-            .then(() => cb())
-            .catch((error) => {
-                console.error(error.message())
-            })
+    addPokenon(data, cb = null) {
+        const newKey = this.database.ref().child('pokemons').push().key;
+        this.database.ref(`pokemons/` + newKey).set(data).then(() => cb && cb());
     }
 }
 
