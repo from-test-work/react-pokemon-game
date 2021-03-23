@@ -17,15 +17,14 @@ const BoardPage = () => {
                             <PokemonCard
                                 className={style.card}
                                 key={key}
-                                uuid={key}
+                                keyid={key}
                                 id={id}
                                 name={name}
                                 img={img}
                                 type={type}
                                 values={values}
-                                isActive={true}
                                 minimize
-                                isSelected={isSelected}
+                                isActive
                             />
                         ))
                 }

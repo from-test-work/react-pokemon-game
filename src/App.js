@@ -6,11 +6,10 @@ import AboutPage from "./routes/AboutPage";
 import ContactPage from "./routes/ContactPage";
 import MenuHeader from "./components/MenuHeader";
 import FooterBlock from "./components/FooterBlock";
-
 import {FirebaseContext} from "./context/firebaseContext";
-
-import style from './style.module.css'
 import Firebase from "./service/firebase";
+
+import style from './style.module.css';
 
 const App = () => {
     const location = useLocation();

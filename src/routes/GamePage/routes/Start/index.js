@@ -1,11 +1,10 @@
 import {useState, useEffect, useContext} from "react";
-import { useHistory } from "react-router-dom";
+import {useHistory} from "react-router-dom";
 import PokemonCard from "../../../../components/PokemonCard";
-
-import style from './style.module.css';
 import {FirebaseContext} from "../../../../context/firebaseContext";
 import {PokemonContext} from "../../../../context/pokemonContext";
 
+import style from './style.module.css';
 
 const StartPage = () => {
     const firebaseContext = useContext(FirebaseContext);
@@ -48,7 +47,7 @@ const StartPage = () => {
                 </button>
             </div>
 
-            <div className="flex">
+            <div className={style.flex}>
                 {
                     Object.entries(pokemons).map(([key, {id, name, img, type, values, selected}]) => (
                         <PokemonCard
