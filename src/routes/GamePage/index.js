@@ -1,11 +1,11 @@
-import {useHistory} from 'react-router-dom';
-import {useState, useEffect} from "react";
+import {useState, useEffect, useContext} from "react";
 import PokemonCard from "../../components/PokemonCard";
 
 import database from "../../service/firebase";
 
 import '../../index.css';
 import '../../App.css';
+import {FirebaseContext} from "../../context/firebaseContext";
 
 // const POKEMONS = [
 //     {
@@ -143,43 +143,22 @@ import '../../App.css';
 // ]
 
 const GamePage = () => {
-    const history = useHistory();
-    const handleBackToHomePage = () => history.push('/');
 
+    const firebaseContext = useContext(FirebaseContext);
+    console.log('####: firebaseContext ', firebaseContext);
     const [pokemons, setPokemons] = useState({});
 
+    const getPokemons = async () => {
+        const response = await firebaseContext.getPokemonsOnce();
+        setPokemons(response);
+    }
+
     useEffect(() => {
-        database.ref('pokemons').once('value', (snapshot) => {
-            setPokemons(snapshot.val());
-        })
-    }, [pokemons])
+        firebaseContext.getPokemonsSoket((pokemons) => {
+            setPokemons(pokemons);
+        });
+    }, [])
 
-    // const handleChangeActive = ({keyid, isActive}) => {
-    //     let _pokemons = {...pokemons};
-    //
-    //     for (const key in _pokemons) {
-    //         if (key === keyid) {
-    //             _pokemons[key] = {
-    //                 ..._pokemons[key],
-    //                 isActive: !isActive
-    //             };
-    //         }
-    //     }
-    //     setPokemons(_pokemons);
-    // };
-
-    // const handleChangeActive = ({keyid, isActive}) => {
-    //     setPokemons(prevState => {
-    //         if (prevState[keyid]) {
-    //             const copyState = {...prevState};
-    //             copyState[keyid]["isActive"] = !isActive
-    //             database.ref('pokemons/' + keyid).set({
-    //                 ...copyState[keyid]
-    //             });
-    //             return copyState;
-    //         }
-    //     });
-    // };
 
     const handleAddNewPokemons = () => {
         const newPokemon = {
@@ -209,73 +188,26 @@ const GamePage = () => {
                 "left": 5
             }
         }
-
-        const newKey = database.ref().child('pokemons').push().key;
-        database.ref('pokemons/' + newKey).set({...newPokemon});
+        firebaseContext.addPokenon({...newPokemon})
     }
 
 
-    // const handleChangeParentState = ({id, isActive}) => {
-    //     console.log(pokemons);
-    //     console.log({id, isActive});
-    //     console.log("------------------");
-    //
-    //     let pokemonsClon = {...pokemons};
-    //     const result = Object.entries(pokemonsClon).map((item, index) => {
-    //         if (item[1].id !== id) return;
-    //         return {
-    //             [item[0]]: {
-    //                 ...item[1],
-    //                 isActive: !isActive
-    //             }
-    //         }
-    //     })
-    //
-    //     console.log(result)
-    //     const normalResult = result.filter(item => item? item : null)[0];
-    //     const _key = Object.keys(normalResult)[0]
-    //     const _values = Object.values(normalResult)[0]
-    //
-    //     console.log(pokemonsClon)
-    //
-    //     for (const key in pokemonsClon) {
-    //         if (key === _key) {
-    //             pokemonsClon[key] = _values;
-    //         }
-    //     }
-    //     console.log(pokemonsClon)
-    //
-    //     setPokemons(pokemonsClon);
-    //     database.ref('pokemons/' + _key).set({
-    //         ..._values
-    //     });
-    //
-    // }
 
+    const handleChangeParentState = ({keyid, isActive}) => {
+        if (pokemons[keyid]) {
+            const copyState = {...pokemons};
+            copyState[keyid]["isActive"] = !isActive
 
-    const handleChangeParentState  = ({keyid, isActive}) => {
-        setPokemons(prevState => {
-            if (prevState[keyid]) {
-                const pokemonsClon = {...prevState};
-                pokemonsClon[keyid]["isActive"] = !isActive
-                database.ref('pokemons/' + keyid).set({
-                    ...pokemonsClon[keyid]
-                });
-                console.log(JSON.stringify(pokemonsClon[keyid], null, 2));
-                return pokemonsClon;
-            }
-        });
+            firebaseContext.postPokemon(keyid, {...copyState[keyid]}, () => {
+                setPokemons(copyState);
+            })
+        }
     };
 
 
     return (
         <div>
-            <h1>
-                This is Game Page!
-            </h1>
-            <button onClick={handleBackToHomePage}>Back to HomePage</button>
-
-
+            <button onClick={handleAddNewPokemons}>Add New Pokemon</button>
 
             <div className="flex">
                 {
@@ -292,7 +224,6 @@ const GamePage = () => {
                     />)
                 }
             </div>
-            <button onClick={handleAddNewPokemons}>Add New Pokemon</button>
         </div>
     );
 };
