@@ -20,11 +20,13 @@ const counterWin = (board, player1, player2) => {
         }
     });
 
-    return [player1Count, player2Count]; 
+    return [player1Count, player2Count];
 }
 
 const BoardPage = () => {
-    const {pokemons} = useContext(PokemonContext);
+    const pokemonsContext = useContext(PokemonContext);
+    const {pokemons} = pokemonsContext;
+
     const [board, setBoard] = useState([]);
     const [player1, setPlayer1] = useState(() => {
         return Object.values(pokemons).map(item => ({
@@ -56,7 +58,7 @@ const BoardPage = () => {
                 possession: 'red'
             }))
         });
-
+        pokemonsContext.onEnemyPokemons(player2Request.data);
     }, []);
 
     if (Object.keys(pokemons).length === 0) {
@@ -114,6 +116,7 @@ const BoardPage = () => {
             } else {
                 alert('DRAW')
             }
+            history.push("/game/finish")
         }
     }, [steps]);
 
