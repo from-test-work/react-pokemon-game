@@ -1,26 +1,59 @@
-import {useContext} from "react";
+import {useContext, useState, useEffect} from "react";
 import {useHistory} from "react-router-dom";
 import PokemonCard from "../../../../components/PokemonCard";
 import {PokemonContext} from "../../../../context/pokemonContext";
 import cn from "classnames";
 
 import style from "./style.module.css";
+import {FirebaseContext} from "../../../../context/firebaseContext";
 
 const FinishPage = () => {
     const pokemonsContext = useContext(PokemonContext);
+    const firebaseContext = useContext(FirebaseContext);
+    const [enemyPokemons, setEnemyPokemons] = useState(pokemonsContext.enemyPopemons)
+    const [selectedPokemon, setSelectedPokemon] = useState(null)
+
     const history = useHistory();
 
     const myCards =  Object.values(pokemonsContext.pokemons);
     const enemyCards = pokemonsContext.enemyPopemons;
 
-    console.log('####: myCards', myCards);
-    console.log('####: enemyCards', enemyCards);
+    // console.log('####: myCards', myCards);
+    // console.log('####: enemyCards', enemyCards);
 
-    const handleEndtGameClick = () => {
-        console.log(pokemonsContext);
-        pokemonsContext.onClearContext();
-        history.push({pathname: '/game/'});
+    const handleEndGameClick = () => {
+        if (selectedPokemon) {
+            delete selectedPokemon.isSelected;
+
+            firebaseContext.addPokenon(selectedPokemon, () => {
+                pokemonsContext.onClearContext();
+                history.push({pathname: "/game/"});
+            });
+        } else {
+            pokemonsContext.onClearContext();
+            history.push({pathname: "/game/"});
+        }
     }
+
+    const handleChangeActiveSelected = (id, isSelected) => {
+        const copyState = enemyPokemons;
+        const newState = copyState.map((item, index) => {
+            if(item.id === id) {
+                item.isSelected = !isSelected;
+                setSelectedPokemon(item);
+            } else {
+                item.isSelected = false;
+            }
+        })
+        pokemonsContext.onEnemyPokemons(newState);
+    };
+
+    useEffect(() => {
+      if (!myCards.length) {
+        history.push({pathname: "/game/"});
+      }
+    });
+
     return (
         <>
             <div className={style.flex}>
@@ -43,15 +76,21 @@ const FinishPage = () => {
                 }
             </div>
             <div className={style.buttonWrap}>
-                <button onClick={handleEndtGameClick}>END GAME</button>
-            </div>
+                <h1>You {pokemonsContext.statusGame}</h1>
+                <button
+                    onClick={handleEndGameClick}
+                    // disabled={pokemonsContext.statusGame !== "WIN"}
+                >END GAME</button></div>
             <div className={style.flex}>
                 {
-                    enemyCards.map(({id, name, img, type, values, isSelected}) => (
+                    enemyPokemons.map(({id, name, img, type, values, isSelected}) => (
                         <div
                             key={id}>
                             <PokemonCard
-                                className={style.card}
+                                className={cn(style.card, {
+                                    [style.noSelected]:pokemonsContext.statusGame !== "WIN",
+                                    [style.isSelected]: isSelected})
+                                }
                                 id={id}
                                 name={name}
                                 img={img}
@@ -59,6 +98,11 @@ const FinishPage = () => {
                                 values={values}
                                 isActive={true}
                                 isSelected={isSelected}
+                                onChangeParentState={ () => {
+                                    if (pokemonsContext.statusGame === "WIN") {
+                                        handleChangeActiveSelected(id, isSelected)
+                                    }
+                                }}
                             />
                         </div>
 

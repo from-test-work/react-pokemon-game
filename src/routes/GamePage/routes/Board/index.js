@@ -41,8 +41,6 @@ const BoardPage = () => {
     const [steps, setSteps] = useState(0)
     const history = useHistory();
 
-    // console.log('####: board', board);
-    console.log('####: player2', player2);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(async () => {
@@ -66,9 +64,6 @@ const BoardPage = () => {
     }
 
     const handleClickBoardPlate = async (position) => {
-        console.log('####: position', position);
-        console.log('####: choiceCard', choiceCard);
-
         if (choiceCard) {
             const params = {
                 position,
@@ -85,9 +80,6 @@ const BoardPage = () => {
             });
 
             const request = await res.json();
-            console.log('####: request', request);
-
-
 
             if (choiceCard.player === 1) {
                 setPlayer1(prevState => prevState.filter(item => item.id !== choiceCard.id));
@@ -108,14 +100,16 @@ const BoardPage = () => {
     useEffect(() => {
         if(steps === 9) {
             const [count1, count2] = counterWin(board, player1, player2);
+            let statusGame;
 
             if(count1 > count2) {
-                alert('WIN')
+                statusGame = "WIN";
             } else if (count1 < count2) {
-                alert('LOSE')
+                statusGame = "LOSE";
             } else {
-                alert('DRAW')
+                statusGame = "DRAW";
             }
+            pokemonsContext.onSetStatusGame(statusGame);
             history.push("/game/finish")
         }
     }, [steps]);
