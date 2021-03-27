@@ -20,7 +20,7 @@ const StartPage = () => {
         });
 
         return () => firebaseContext.offPokemonsSoket();
-    }, [])
+    }, [firebaseContext])
 
     const handleChangeActiveSelected = (key) => {
         const pokemon = {...pokemons[key]}
