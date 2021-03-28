@@ -5,32 +5,46 @@ import {FirebaseContext} from "../../../../context/firebaseContext";
 import {PokemonContext} from "../../../../context/pokemonContext";
 
 import style from './style.module.css';
+import {useDispatch, useSelector} from "react-redux";
+import {getPokemonsAsync, selectPokemonsData, selectPokemonsLoading} from "../../../../store/pokemons";
 
 const StartPage = () => {
     const firebaseContext = useContext(FirebaseContext);
     const pokemonsContext = useContext(PokemonContext);
-
+    const isLoading = useSelector(selectPokemonsLoading);
+    const pokemonsRedux = useSelector(selectPokemonsData);
+    const dispatch = useDispatch();
     const history = useHistory();
-
     const [pokemons, setPokemons] = useState({});
 
+    console.log(isLoading);
+
     useEffect(() => {
+        dispatch(getPokemonsAsync());
+
         firebaseContext.getPokemonsSoket((pokemons) => {
             setPokemons(pokemons);
         });
 
         return () => firebaseContext.offPokemonsSoket();
-    }, [firebaseContext])
+    }, [dispatch, firebaseContext])
+
+    useEffect(() => {
+        setPokemons(pokemonsRedux);
+    }, [pokemonsRedux]);
+
 
     const handleChangeActiveSelected = (key) => {
         const pokemon = {...pokemons[key]}
         pokemonsContext.onSelectedPokemons(key, pokemon);
-        if (pokemons[key]) {
-            const copyState = {...pokemons};
-            copyState[key]["selected"] = !copyState[key]["selected"]
+        setPokemons(prevState => ({
+            ...prevState,
+            [key]: {
+                ...prevState[key],
+                selected: !prevState[key].selected
+            }
+        }))
 
-            setPokemons(copyState);
-        }
     };
 
     const handleStartGameClick = () => {

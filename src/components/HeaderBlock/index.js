@@ -6,7 +6,6 @@ const HeaderBlock = ({
                          desc = "Description",
                      }) => {
     const history = useHistory();
-
     const handleClick = () => {
         console.log('####: <Header />');
         history.push('/game');

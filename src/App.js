@@ -7,7 +7,7 @@ import ContactPage from "./routes/ContactPage";
 import MenuHeader from "./components/MenuHeader";
 import FooterBlock from "./components/FooterBlock";
 import {FirebaseContext} from "./context/firebaseContext";
-import Firebase from "./service/firebase";
+import FirebaseClass from "./service/firebase";
 
 import style from './style.module.css';
 
@@ -16,7 +16,7 @@ const App = () => {
     const isPadding = location.pathname === "/" || location.pathname === "/game/board" || location.pathname === "/home";
 
     return (
-        <FirebaseContext.Provider value={new Firebase()}>
+        <FirebaseContext.Provider value={FirebaseClass}>
             <Switch>
                 <Route path="/404" render={() => (
                     <>
